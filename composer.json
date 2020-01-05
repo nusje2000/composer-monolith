@@ -1,0 +1,43 @@
+{
+    "name": "nusje2000/composer-monolith",
+    "description": "Provides commands to validate dependencies within a monolithic repository structure",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maarten Nusteling",
+            "email": "maarten.nusteling@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "bin": [
+        "bin/composer-monolith"
+    ],
+    "scripts": {
+        "phpstan": [
+            "vendor/bin/phpstan analyze ./src ./tests --level max"
+        ],
+        "phpunit": [
+            "vendor/bin/phpunit ./tests"
+        ]
+    },
+    "require": {
+        "nusje2000/dependency-graph": "^1.0",
+        "symfony/console": "^4.4 | ^5.0",
+        "composer/semver": "^1.5"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.12.3",
+        "phpunit/phpunit": "^8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nusje2000\\ComposerMonolith\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nusje2000\\ComposerMonolith\\Tests\\": "tests"
+        }
+    }
+}

@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+use Nusje2000\ComposerMonolith\Command\ValidateCommand;
+use Symfony\Component\Console\Application;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 'stderr');
+
+$autoloader = getcwd() . '/vendor/autoload.php';
+
+if (is_file($autoloader)) {
+    require_once $autoloader;
+} else {
+    throw new LogicException(sprintf('Could not resolve autoloader file in "%s" (looked for "%s")', getcwd(), $autoloader));
+}
+
+$application = new Application('Composer Monolith | A monolithic repository dependency validator');
+$application->add(new ValidateCommand());
+$application->run();
