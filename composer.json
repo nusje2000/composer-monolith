@@ -9,7 +9,6 @@
             "email": "maarten.nusteling@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
     "bin": [
         "bin/composer-monolith"
     ],
