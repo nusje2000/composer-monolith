@@ -67,16 +67,24 @@ final class MissingDependencyFixer extends AbstractFixer
             }
 
             if (null === $versionConstraint) {
-                $this->output->writeln(sprintf('[ERROR] Could not resolve version constraint for dependency on "%s".', $versionConstraint));
+                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>.', $name));
 
                 continue;
             }
 
             if ($isDevDependency) {
-                $this->output->writeln(sprintf('[SOLUTION] added pacakge "%s" to the dev-dependencies (version: %s)', $name, $versionConstraint));
+                $this->solution(sprintf(
+                    'Added pacakge <dependency>"%s"</dependency> to the dev-dependencies (version: <version>%s</version>)',
+                    $name,
+                    $versionConstraint
+                ));
                 $rootDefinition->addDevDependency($name, $versionConstraint);
             } else {
-                $this->output->writeln(sprintf('[SOLUTION] added pacakge "%s" to the dev-dependencies (version: %s)', $name, $versionConstraint));
+                $this->solution(sprintf(
+                    'Added pacakge <dependency>"%s"</dependency> to the dev-dependencies (version: <version>%s</version>)',
+                    $name,
+                    $versionConstraint
+                ));
                 $rootDefinition->setDependency($name, $versionConstraint);
             }
 

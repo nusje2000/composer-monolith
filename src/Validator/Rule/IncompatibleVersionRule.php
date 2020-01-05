@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Nusje2000\ComposerMonolith\Validator\Rule;
 
 use Composer\Semver\VersionParser;
-use Nusje2000\DependencyGraph\DependencyGraph;
 use Nusje2000\ComposerMonolith\Validator\RuleInterface;
 use Nusje2000\ComposerMonolith\Validator\Violation\IncompatibleVersionConstraintViolation;
 use Nusje2000\ComposerMonolith\Validator\ViolationCollection;
+use Nusje2000\DependencyGraph\DependencyGraph;
 
 final class IncompatibleVersionRule implements RuleInterface
 {
@@ -51,6 +51,6 @@ final class IncompatibleVersionRule implements RuleInterface
         $rootPacakgeConstraint = $this->versionParser->parseConstraints($rootVersionConstraint);
         $subPackageConstraint = $this->versionParser->parseConstraints($subPackageVersionConstraint);
 
-        return $subPackageConstraint->matches($rootPacakgeConstraint);
+        return $rootPacakgeConstraint->matches($subPackageConstraint);
     }
 }

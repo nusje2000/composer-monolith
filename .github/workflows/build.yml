@@ -29,3 +29,7 @@ jobs:
             -   name: PHP Unit
                 run: |
                     composer run phpunit
+
+            -   name: Validate graph
+                run: |
+                    composer run graph-validate

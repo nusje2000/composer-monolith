@@ -12,6 +12,7 @@ use Nusje2000\ComposerMonolith\Validator\RuleCollection;
 use Nusje2000\ComposerMonolith\Validator\Validator;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,6 +37,12 @@ final class ValidateCommand extends Command
     {
         $projectRoot = getcwd();
         $io = new SymfonyStyle($input, $output);
+        $io->getFormatter()->setStyle('error', new OutputFormatterStyle('red'));
+        $io->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
+        $io->getFormatter()->setStyle('dependency', new OutputFormatterStyle('blue'));
+        $io->getFormatter()->setStyle('package', new OutputFormatterStyle('blue'));
+        $io->getFormatter()->setStyle('version', new OutputFormatterStyle('magenta'));
+        $io->getFormatter()->setStyle('violation', new OutputFormatterStyle('red'));
 
         $overrideRoot = $input->getOption('root');
         if (is_string($overrideRoot)) {
@@ -71,7 +78,7 @@ final class ValidateCommand extends Command
         }
 
         foreach ($violations as $violation) {
-            $io->writeln(sprintf('[VIOLATION] %s', $violation->getMessage()));
+            $io->writeln(sprintf('<violation>[VIOLATION]</violation> %s', $violation->getFormattedMessage()));
         }
 
         if (!empty($violations)) {
@@ -90,7 +97,7 @@ final class ValidateCommand extends Command
                 $io->section('Remaining violations');
 
                 foreach ($leftViolations as $violation) {
-                    $io->writeln(sprintf('[VIOLATION] %s', $violation->getMessage()));
+                    $io->writeln(sprintf('[VIOLATION] %s', $violation->getFormattedMessage()));
                 }
 
                 return 1;

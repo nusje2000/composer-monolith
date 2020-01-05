@@ -44,4 +44,14 @@ final class DevelopmentOnlyViolation implements ViolationInterface
             $this->package->getName()
         );
     }
+
+    public function getFormattedMessage(): string
+    {
+        return sprintf(
+            'Dependency <dependency>"%s"</dependency> is used by package <package>"%s"</package> as non-dev dependency but the package is '.
+            'defined as dev dependency in the root.',
+            $this->dependency->getName(),
+            $this->package->getName()
+        );
+    }
 }

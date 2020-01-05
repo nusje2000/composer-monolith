@@ -26,7 +26,7 @@ final class DevelopmentOnlyFixer extends AbstractFixer
                     try {
                         $versionConstraint = $rootDefinition->getDevDependencyVersionConstraint($name);
                     } catch (DefinitionException $exception) {
-                        $this->output->writeln(sprintf('[ERROR] %s', $exception->getMessage()));
+                        $this->error($exception->getMessage());
 
                         continue;
                     }
@@ -35,7 +35,7 @@ final class DevelopmentOnlyFixer extends AbstractFixer
                     $rootDefinition->setDependency($name, $versionConstraint);
                     $fixed[] = $name;
 
-                    $this->output->writeln(sprintf('[SOLUTION] Moved dependency on "%s" from require-dev to require.', $name));
+                    $this->solution(sprintf('Moved dependency on <dependency>"%s"</dependency> from require-dev to require.', $name));
                 }
 
                 $violations->remove($violation);

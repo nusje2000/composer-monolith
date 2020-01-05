@@ -21,11 +21,11 @@ abstract class AbstractFixer implements FixerInterface
 
     public function error(string $error): void
     {
-
+        $this->output->writeln(sprintf('<error>[ERROR]</error> %s', $error));
     }
 
     public function solution(string $solution): void
     {
-
+        $this->output->writeln(sprintf('<success>[SOLUTION]</success> %s', $solution));
     }
 }

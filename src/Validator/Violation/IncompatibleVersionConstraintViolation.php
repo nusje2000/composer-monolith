@@ -45,4 +45,14 @@ final class IncompatibleVersionConstraintViolation implements ViolationInterface
             $this->dependency->getVersionConstraint()
         );
     }
+
+    public function getFormattedMessage(): string
+    {
+        return sprintf(
+            'Dependency on <dependency>"%s"</dependency> in package <package>"%s"</package> requires version that matches <version>%s</version>.',
+            $this->dependency->getName(),
+            $this->package->getName(),
+            $this->dependency->getVersionConstraint()
+        );
+    }
 }

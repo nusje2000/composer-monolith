@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Nusje2000\ComposerMonolith\Autofix\Fixer;
 
 use Composer\Semver\VersionParser;
+use Nusje2000\ComposerMonolith\Validator\Violation\IncompatibleVersionConstraintViolation;
+use Nusje2000\ComposerMonolith\Validator\ViolationCollection;
+use Nusje2000\ComposerMonolith\Validator\ViolationInterface;
 use Nusje2000\DependencyGraph\Composer\PackageDefinition;
 use Nusje2000\DependencyGraph\DependencyGraph;
-use Nusje2000\ComposerMonolith\Validator\Violation\IncompatibleVersionConstraintViolation;
-use Nusje2000\ComposerMonolith\Validator\ViolationInterface;
 use Symfony\Component\Console\Style\OutputStyle;
-use Nusje2000\ComposerMonolith\Validator\ViolationCollection;
 
 final class IncompatibleVersionFixer extends AbstractFixer
 {
@@ -58,18 +58,18 @@ final class IncompatibleVersionFixer extends AbstractFixer
             }
 
             if (null === $versionConstraint) {
-                $this->output->writeln(sprintf('[ERROR] Could not resolve version constraint for dependency on "%s".', $versionConstraint));
+                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>.', $name));
 
                 continue;
             }
 
             if ($rootDefinition->hasDependency($name)) {
-                $this->output->writeln(sprintf('[SOLUTION] update dependency on "%s" to version %s', $name, $versionConstraint));
+                $this->solution(sprintf('Update dependency on <dependency>"%s"</dependency> to version <version>%s</version>', $name, $versionConstraint));
                 $rootDefinition->setDependency($name, $versionConstraint);
             }
 
             if ($rootDefinition->hasDevDependency($name)) {
-                $this->output->writeln(sprintf('[SOLUTION] update dev-dependency on "%s" to version %s', $name, $versionConstraint));
+                $this->solution(sprintf('Update dev-dependency on <dependency>"%s"</dependency> to version <version>%s</version>', $name, $versionConstraint));
                 $rootDefinition->addDevDependency($name, $versionConstraint);
             }
 
