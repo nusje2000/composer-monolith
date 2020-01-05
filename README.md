@@ -3,7 +3,7 @@
 ### Installation
 Using composer:
 ```
-composer require nusje2000/composer-monolithic-repository
+composer require nusje2000/composer-monolith --dev
 ```
 
 ### Validating project structure
