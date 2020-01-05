@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Nusje2000\ComposerMonolith\Tests\Validator\Rule;
 
+use Nusje2000\ComposerMonolith\Validator\Rule\MissingDependencyRule;
 use Nusje2000\DependencyGraph\Dependency\Dependency;
 use Nusje2000\DependencyGraph\Dependency\DependencyCollection;
 use Nusje2000\DependencyGraph\Dependency\DependencyTypeEnum;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Nusje2000\DependencyGraph\Package\Package;
 use Nusje2000\DependencyGraph\Package\PackageCollection;
-use Nusje2000\DependencyGraph\Validator\Rule\MissingDependencyRule;
 use PHPStan\Testing\TestCase;
 
 final class MissingDependencyRuleTest extends TestCase

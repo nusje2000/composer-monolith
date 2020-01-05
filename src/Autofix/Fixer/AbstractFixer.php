@@ -18,4 +18,14 @@ abstract class AbstractFixer implements FixerInterface
     {
         $this->output = $output;
     }
+
+    public function error(string $error): void
+    {
+
+    }
+
+    public function solution(string $solution): void
+    {
+
+    }
 }
