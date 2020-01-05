@@ -20,7 +20,7 @@
             "vendor/bin/phpunit ./tests"
         ],
         "graph-validate": [
-            "bin/composer-monolith validate"
+            "php bin/composer-monolith validate"
         ]
     },
     "require": {
