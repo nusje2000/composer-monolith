@@ -1,4 +1,4 @@
-# composer-monolithic-repository
+# Composer monolith
 
 ### Installation
 Using composer:
