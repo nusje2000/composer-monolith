@@ -43,7 +43,7 @@ final class MissingDependencyFixer extends AbstractFixer
 
                 $violationFixes[$dependency->getName()][] = $violation;
 
-                if ($dependency->isDev() && false !== $devDependencies[$dependency->getName()] ?? true) {
+                if ($dependency->isDev() && false !== ($devDependencies[$dependency->getName()] ?? true)) {
                     $devDependencies[$dependency->getName()] = true;
                 } else {
                     $devDependencies[$dependency->getName()] = false;
