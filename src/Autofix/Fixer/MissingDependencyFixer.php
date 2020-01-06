@@ -43,9 +43,9 @@ final class MissingDependencyFixer extends AbstractFixer
 
                 $violationFixes[$dependency->getName()][] = $violation;
 
-                if ($dependency->isDev() && false !== ($devDependencies[$dependency->getName()] ?? true)) {
+                if ($dependency->isDev() && !isset($devDependencies[$dependency->getName()])) {
                     $devDependencies[$dependency->getName()] = true;
-                } else {
+                } elseif (!$dependency->isDev()) {
                     $devDependencies[$dependency->getName()] = false;
                 }
             }
@@ -57,7 +57,7 @@ final class MissingDependencyFixer extends AbstractFixer
 
         $rootDefinition = PackageDefinition::createFromDirectory($graph->getRootPath());
         foreach ($missingDependencies as $name => $versionConstraints) {
-            $isDevDependency = $devDependencies[$name];
+            $isDevDependency = $devDependencies[$name] ?? false;
             $versionConstraint = $this->guessVersion($versionConstraints);
 
             if (null === $versionConstraint) {
