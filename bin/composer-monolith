@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
-use Nusje2000\ComposerMonolith\Command\ValidateCommand;
+use Nusje2000\ComposerMonolith\Command;
 use Symfony\Component\Console\Application;
 
 error_reporting(E_ALL);
@@ -16,5 +16,7 @@ if (is_file($autoloader)) {
 }
 
 $application = new Application('Composer Monolith | A monolithic repository dependency validator');
-$application->add(new ValidateCommand());
+$application->add(new Command\ValidateCommand());
+$application->add(new Command\EqualizeVersionCommand());
+$application->add(new Command\UpdateCommand());
 $application->run();

@@ -7,12 +7,12 @@ namespace Nusje2000\ComposerMonolith\Command;
 use Nusje2000\ComposerMonolith\Autofix\Fixer;
 use Nusje2000\ComposerMonolith\Autofix\FixerCollection;
 use Nusje2000\ComposerMonolith\Autofix\ViolationFixer;
+use Nusje2000\ComposerMonolith\Formatter\OutputFormatter;
 use Nusje2000\ComposerMonolith\Validator\Rule;
 use Nusje2000\ComposerMonolith\Validator\RuleCollection;
 use Nusje2000\ComposerMonolith\Validator\Validator;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,13 +36,9 @@ final class ValidateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projectRoot = getcwd();
+
         $io = new SymfonyStyle($input, $output);
-        $io->getFormatter()->setStyle('error', new OutputFormatterStyle('red'));
-        $io->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
-        $io->getFormatter()->setStyle('dependency', new OutputFormatterStyle('blue'));
-        $io->getFormatter()->setStyle('package', new OutputFormatterStyle('blue'));
-        $io->getFormatter()->setStyle('version', new OutputFormatterStyle('magenta'));
-        $io->getFormatter()->setStyle('violation', new OutputFormatterStyle('red'));
+        $io->setFormatter(new OutputFormatter());
 
         $overrideRoot = $input->getOption('root');
         if (is_string($overrideRoot)) {

@@ -54,7 +54,7 @@ final class IncompatibleVersionFixer extends AbstractFixer
                     $versionConstraint
                 ));
 
-                $rootDefinition->addDevDependency($dependencyName, $versionConstraint);
+                $rootDefinition->setDevDependency($dependencyName, $versionConstraint);
             }
 
             foreach ($violationFixes as $violation) {

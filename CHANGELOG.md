@@ -8,6 +8,9 @@
  - IncompatibleVersionFixer and MissingDependencyFixer now use the
    dependency graph to determine the correct version constraint instead
    of only the violations
+ - Added `EqualizeVersionCommand`
+ - Added `UpdateCommand`
+ - Updated to dependency-graph `^2.1`
 
 ## 1.0.5
  - Fixed dev dependency check

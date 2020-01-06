@@ -51,7 +51,7 @@ final class MissingDependencyFixer extends AbstractFixer
                     $versionConstraint
                 ));
 
-                $rootDefinition->addDevDependency($dependencyName, $versionConstraint);
+                $rootDefinition->setDevDependency($dependencyName, $versionConstraint);
             } else {
                 $this->solution(sprintf(
                     'Added pacakge <dependency>"%s"</dependency> to the dev-dependencies (version: <version>%s</version>)',
