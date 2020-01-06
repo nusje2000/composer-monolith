@@ -37,7 +37,7 @@ final class IncompatibleVersionRule implements RuleInterface
                 $rootDependency = $rootPackage->getDependency($dependency->getName());
                 if (!$this->isCompatible($rootDependency->getVersionConstraint(), $dependency->getVersionConstraint())) {
                     $violations->append(
-                        new IncompatibleVersionConstraintViolation($subPackage, $dependency)
+                        new IncompatibleVersionConstraintViolation($subPackage, $dependency, $rootDependency->getVersionConstraint())
                     );
                 }
             }

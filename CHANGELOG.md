@@ -1,4 +1,26 @@
 # CHANGELOG
 
+## 1.1.0
+ - Removed DevelopmentOnlyRule
+ - Removed DevelopmentOnlyViolation
+ - Removed DevelopmentOnlyFixer
+ - Added installed version to IncompatibleVersionConstraintViolation message
+ - IncompatibleVersionFixer and MissingDependencyFixer now use the
+   dependency graph to determine the correct version constraint instead
+   of only the violations
+
+## 1.0.5
+ - Fixed dev dependency check
+
+## 1.0.4
+ - Fixed undefined notice
+
+## 1.0.3
+ - Added colors to command line to improve readability
+ - Fixed build failures
+
+## 1.0.2
+ - Removed minimum stability from composer.json
+
 ## 1.0.1
  - Allowed nusje2000/dependency-graph version ^2.0

@@ -58,14 +58,12 @@ final class ValidateCommand extends Command
         $graph = DependencyGraph::build($projectRoot);
 
         $validator = new Validator(new RuleCollection([
-            new Rule\DevelopmentOnlyRule(),
             new Rule\MissingDependencyRule(),
             new Rule\IncompatibleVersionRule(),
         ]));
 
         $fixer = new ViolationFixer(new FixerCollection([
             new Fixer\MissingDependencyFixer($io),
-            new Fixer\DevelopmentOnlyFixer($io),
             new Fixer\IncompatibleVersionFixer($io),
         ]));
 
@@ -83,6 +81,8 @@ final class ValidateCommand extends Command
 
         if (!empty($violations)) {
             $io->newLine();
+            $io->error(sprintf('Analysis complete, total of %d violations found.', $violations->count()));
+            $io->newLine();
         }
 
         if ($input->getOption('autofix')) {
@@ -97,7 +97,7 @@ final class ValidateCommand extends Command
                 $io->section('Remaining violations');
 
                 foreach ($leftViolations as $violation) {
-                    $io->writeln(sprintf('[VIOLATION] %s', $violation->getFormattedMessage()));
+                    $io->writeln(sprintf('<violation>[VIOLATION]</violation> %s', $violation->getFormattedMessage()));
                 }
 
                 return 1;
