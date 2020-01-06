@@ -55,6 +55,18 @@ final class UpdateCommand extends Command
         $dependencyName = $input->getArgument('dependency');
         $versionConstraint = $input->getArgument('version_constraint');
 
+        if (!is_string($dependencyName)) {
+            $io->error('Dependency name must be a string.');
+
+            return 1;
+        }
+
+        if (!is_string($versionConstraint)) {
+            $io->error('Version constraint must be a string.');
+
+            return 1;
+        }
+
         $packages = $graph->getPackages()->filter(static function (PackageInterface $package): bool {
             return !$package->isFromVendor();
         });

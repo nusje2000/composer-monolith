@@ -41,8 +41,8 @@ final class MissingDependencyFixer extends AbstractFixer
             }
 
             $isDev = $graph->getSubPackages()->filter(static function (PackageInterface $package) use ($dependencyName) {
-                return $package->hasDependency($dependencyName) && $package->getDependency($dependencyName)->isDev();
-            });
+                return $package->hasDependency($dependencyName) && !$package->getDependency($dependencyName)->isDev();
+            })->isEmpty();
 
             if ($isDev) {
                 $this->solution(sprintf(
@@ -54,7 +54,7 @@ final class MissingDependencyFixer extends AbstractFixer
                 $rootDefinition->setDevDependency($dependencyName, $versionConstraint);
             } else {
                 $this->solution(sprintf(
-                    'Added pacakge <dependency>"%s"</dependency> to the dev-dependencies (version: <version>%s</version>)',
+                    'Added pacakge <dependency>"%s"</dependency> to the dependencies (version: <version>%s</version>)',
                     $dependencyName,
                     $versionConstraint
                 ));

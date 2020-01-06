@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.1.1
+ - Fixed phpstan errors
+
 ## 1.1.0
  - Removed DevelopmentOnlyRule
  - Removed DevelopmentOnlyViolation

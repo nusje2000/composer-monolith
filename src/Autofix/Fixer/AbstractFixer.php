@@ -63,10 +63,13 @@ abstract class AbstractFixer implements FixerInterface
      */
     protected function getReferencedVersions(DependencyGraph $graph, string $dependencyName): array
     {
-        return $graph->getSubPackages()->filter(static function (PackageInterface $package) use ($dependencyName): bool {
+        /** @var array<string, string> $referncedVersions */
+        $referncedVersions = $graph->getSubPackages()->filter(static function (PackageInterface $package) use ($dependencyName): bool {
             return $package->hasDependency($dependencyName);
         })->map(static function (PackageInterface $package) use ($dependencyName): string {
             return $package->getDependency($dependencyName)->getVersionConstraint();
         });
+
+        return $referncedVersions;
     }
 }
