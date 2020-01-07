@@ -159,7 +159,7 @@ final class EqualizeVersionCommand extends Command
     }
 
     /**
-     * @param array<stirng, string> $versions
+     * @param array<string, string> $versions
      */
     private function formatReferences(array $versions): string
     {
