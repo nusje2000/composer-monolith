@@ -77,11 +77,7 @@ final class EqualizeVersionCommand extends Command
         }
 
         foreach ($dependencies as $name => $versions) {
-            $references = array_map(static function (string $version, string $package) {
-                return sprintf('<package>%s</package>: <version>%s</version>', $package, $version);
-            }, $versions, array_keys($versions));
-
-            $io->writeln(sprintf('Equalizable dependency on <dependency>%s</dependency> (references: %s)', $name, implode(', ', $references)));
+            $io->writeln(sprintf('Equalizable dependency on <dependency>%s</dependency> (references: %s)', $name, $this->formatReferences($versions)));
         }
 
         $selectedDependency = null;
@@ -160,5 +156,28 @@ final class EqualizeVersionCommand extends Command
 
             $definition->save();
         }
+    }
+
+    /**
+     * @param array<stirng, string> $versions
+     */
+    private function formatReferences(array $versions): string
+    {
+        $counts = array_count_values($versions);
+        arsort($counts);
+        $default = array_key_first($counts);
+
+        $references = array_filter($versions, static function (string $version) use ($default) {
+            return $version !== $default;
+        });
+
+        $references = array_map(static function (string $version, string $package) {
+            return sprintf('<package>%s</package>: <version>%s</version>', $package, $version);
+        }, $references, array_keys($references));
+
+        return implode(array_merge(
+            [sprintf('<package>default</package>: <version>%s</version>', $default)],
+            $references
+        ), ', ');
     }
 }
