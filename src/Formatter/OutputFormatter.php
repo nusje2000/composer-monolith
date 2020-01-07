@@ -9,7 +9,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 final class OutputFormatter extends BaseOutputFormatter
 {
-    public function __construct(bool $decorated = false, array $styles = [])
+    public function __construct(bool $decorated = true, array $styles = [])
     {
         parent::__construct($decorated, $styles);
 
