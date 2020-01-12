@@ -39,8 +39,8 @@ final class IncompatibleVersionRuleTest extends TestCase
         $violations = $rule->execute($graph);
 
         self::assertSame([
-            'Dependency on "bar/bar-package" in package "foo/package-3" requires version that matches "2.0".',
-            'Dependency on "bar/bar-package" in package "foo/package-4" requires version that matches "^2.0".',
+            'Dependency on "bar/bar-package" in package "foo/package-3" requires version that matches "2.0". (installed: ~1.0)',
+            'Dependency on "bar/bar-package" in package "foo/package-4" requires version that matches "^2.0". (installed: ~1.0)',
         ], $violations->getMessages()->toArray());
     }
 }
