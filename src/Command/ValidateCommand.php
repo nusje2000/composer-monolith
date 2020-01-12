@@ -56,11 +56,13 @@ final class ValidateCommand extends Command
         $validator = new Validator(new RuleCollection([
             new Rule\MissingDependencyRule(),
             new Rule\IncompatibleVersionRule(),
+            new Rule\MissingReplaceRule(),
         ]));
 
         $fixer = new ViolationFixer(new FixerCollection([
             new Fixer\MissingDependencyFixer($io),
             new Fixer\IncompatibleVersionFixer($io),
+            new Fixer\MissingReplaceFixer($io),
         ]));
 
         $violations = $validator->validate($graph);
