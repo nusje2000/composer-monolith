@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.2.0
+ - Added MissingReplaceRule and MissingReplaceFixer
+
+## 1.1.3
+ - Added default version to version-equalize command
+
+## 1.1.2
+ - Fixed colors in command line
+
 ## 1.1.1
  - Fixed phpstan errors
 
