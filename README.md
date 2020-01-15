@@ -8,7 +8,7 @@ composer require nusje2000/composer-monolith --dev
 
 ## Validation rules
 ### IncompatibleVersionRule
-This rule checks the version constraint of dependencies in subpacakges and compares them with the version constraint on that same dependency in the root composer.json file. Example:
+This rule checks the version constraint of dependencies in subpackages and compares them with the version constraint on that same dependency in the root composer.json file. Example:
  - Sub-package `foo/foo-package` has a dependency on `bar/bar-package ^1.0`
  - Root composer.json defines a dependency on `bar/bar-package ^2.0`
  - Rule will trigger because version `^1.0` is not compatible with version `^2.0`
