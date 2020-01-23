@@ -7,7 +7,6 @@ namespace Nusje2000\ComposerMonolith\Autofix\Fixer;
 use Nusje2000\ComposerMonolith\Validator\Violation\IncompatibleVersionConstraintViolation;
 use Nusje2000\ComposerMonolith\Validator\ViolationCollection;
 use Nusje2000\ComposerMonolith\Validator\ViolationInterface;
-use Nusje2000\DependencyGraph\Composer\PackageDefinition;
 use Nusje2000\DependencyGraph\DependencyGraph;
 
 final class IncompatibleVersionFixer extends AbstractFixer
@@ -27,8 +26,15 @@ final class IncompatibleVersionFixer extends AbstractFixer
             return;
         }
 
-        $rootDefinition = PackageDefinition::createFromDirectory($graph->getRootPath());
+        $rootPackage = $graph->getRootPackage();
+        $mutator = $this->definitionMutatorFactory->createByPackage($graph->getRootPackage());
+
         foreach ($versionConflicts as $dependencyName => $violationFixes) {
+            if (!$rootPackage->hasDependency($dependencyName)) {
+                continue;
+            }
+
+            $dependency = $rootPackage->getDependency($dependencyName);
             $versionConstraint = $this->resolveRequiredVersion($graph, $dependencyName);
 
             if (null === $versionConstraint) {
@@ -37,24 +43,22 @@ final class IncompatibleVersionFixer extends AbstractFixer
                 continue;
             }
 
-            if ($rootDefinition->hasDependency($dependencyName)) {
+            if (!$dependency->isDev()) {
                 $this->solution(sprintf(
                     'Update dependency on <dependency>"%s"</dependency> to version <version>%s</version>',
                     $dependencyName,
                     $versionConstraint
                 ));
 
-                $rootDefinition->setDependency($dependencyName, $versionConstraint);
-            }
-
-            if ($rootDefinition->hasDevDependency($dependencyName)) {
+                $mutator->setDependency($dependencyName, $versionConstraint);
+            } else {
                 $this->solution(sprintf(
                     'Update dev-dependency on <dependency>"%s"</dependency> to version <version>%s</version>',
                     $dependencyName,
                     $versionConstraint
                 ));
 
-                $rootDefinition->setDevDependency($dependencyName, $versionConstraint);
+                $mutator->setDevDependency($dependencyName, $versionConstraint);
             }
 
             foreach ($violationFixes as $violation) {
@@ -62,6 +66,6 @@ final class IncompatibleVersionFixer extends AbstractFixer
             }
         }
 
-        $rootDefinition->save();
+        $mutator->save();
     }
 }

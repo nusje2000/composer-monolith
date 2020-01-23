@@ -6,6 +6,8 @@ namespace Nusje2000\ComposerMonolith\Autofix\Fixer;
 
 use Nusje2000\ComposerMonolith\Autofix\FixerInterface;
 use Nusje2000\ComposerMonolith\Autofix\VersionGuesser;
+use Nusje2000\ComposerMonolith\Composer\DefinitionMutatorFactory;
+use Nusje2000\ComposerMonolith\Composer\DefinitionMutatorFactoryInterface;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Nusje2000\DependencyGraph\Package\PackageInterface;
 use Symfony\Component\Console\Style\OutputStyle;
@@ -22,9 +24,15 @@ abstract class AbstractFixer implements FixerInterface
      */
     protected $versionGuesser;
 
-    public function __construct(OutputStyle $output)
+    /**
+     * @var DefinitionMutatorFactoryInterface
+     */
+    protected $definitionMutatorFactory;
+
+    public function __construct(OutputStyle $output, ?DefinitionMutatorFactoryInterface $definitionMutator = null)
     {
         $this->output = $output;
+        $this->definitionMutatorFactory = $definitionMutator ?? new DefinitionMutatorFactory();
         $this->versionGuesser = new VersionGuesser();
     }
 
