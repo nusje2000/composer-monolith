@@ -33,6 +33,9 @@ final class IncompatibleVersionRuleTest extends TestCase
             new Package('foo/package-4', '/path/to/root/package-4', false, new DependencyCollection([
                 new Dependency('bar/bar-package', '^2.0', false, new DependencyTypeEnum(DependencyTypeEnum::PACKAGE)),
             ])),
+            new Package('foo/package-4', '/path/to/root/package-4', false, new DependencyCollection([
+                new Dependency('foo/foo-package', '^2.0', false, new DependencyTypeEnum(DependencyTypeEnum::PACKAGE)),
+            ])),
         ]));
 
         $rule = new IncompatibleVersionRule();
@@ -42,5 +45,10 @@ final class IncompatibleVersionRuleTest extends TestCase
             'Dependency on "bar/bar-package" in package "foo/package-3" requires version that matches "2.0". (installed: ~1.0)',
             'Dependency on "bar/bar-package" in package "foo/package-4" requires version that matches "^2.0". (installed: ~1.0)',
         ], $violations->getMessages()->toArray());
+
+        self::assertSame([
+            'Dependency on <dependency>"bar/bar-package"</dependency> in package <package>"foo/package-3"</package> requires version that matches <version>2.0</version>. (installed: <version>~1.0</version>)',
+            'Dependency on <dependency>"bar/bar-package"</dependency> in package <package>"foo/package-4"</package> requires version that matches <version>^2.0</version>. (installed: <version>~1.0</version>)',
+        ], $violations->getFormattedMessages()->toArray());
     }
 }

@@ -27,6 +27,15 @@ final class ViolationCollection extends ObjectCollection
 
         return new StringCollection($messages);
     }
+    public function getFormattedMessages(): StringCollection
+    {
+        /** @var array<string> $messages */
+        $messages = $this->map(static function (ViolationInterface $violation) {
+            return $violation->getFormattedMessage();
+        });
+
+        return new StringCollection($messages);
+    }
 
     protected function allowedInstance(): string
     {
