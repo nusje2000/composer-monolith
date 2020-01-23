@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Nusje2000\ComposerMonolith\Tests\Validator\OutputFormatter;
+
 use Nusje2000\ComposerMonolith\Formatter\OutputFormatter;
 use PHPStan\Testing\TestCase;
 

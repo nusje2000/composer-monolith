@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Nusje2000\ComposerMonolith\Tests\Validator;
+
 use Nusje2000\ComposerMonolith\Validator\RuleCollection;
 use Nusje2000\ComposerMonolith\Validator\RuleInterface;
 use Nusje2000\ComposerMonolith\Validator\Validator;
