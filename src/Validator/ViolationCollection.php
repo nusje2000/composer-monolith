@@ -20,8 +20,8 @@ final class ViolationCollection extends ObjectCollection
 {
     public function getMessages(): StringCollection
     {
-        /** @var array<string> $messages */
-        $messages = $this->map(static function (ViolationInterface $violation) {
+        /** @var array<int|string, string> $messages */
+        $messages = $this->map(static function (ViolationInterface $violation): string {
             return $violation->getMessage();
         });
 
@@ -29,8 +29,8 @@ final class ViolationCollection extends ObjectCollection
     }
     public function getFormattedMessages(): StringCollection
     {
-        /** @var array<string> $messages */
-        $messages = $this->map(static function (ViolationInterface $violation) {
+        /** @var array<int|string, string> $messages */
+        $messages = $this->map(static function (ViolationInterface $violation): string {
             return $violation->getFormattedMessage();
         });
 
