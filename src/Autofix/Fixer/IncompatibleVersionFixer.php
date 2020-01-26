@@ -22,10 +22,6 @@ final class IncompatibleVersionFixer extends AbstractFixer
             }
         }
 
-        if (empty($versionConflicts)) {
-            return;
-        }
-
         $rootPackage = $graph->getRootPackage();
         $mutator = $this->definitionMutatorFactory->createByPackage($graph->getRootPackage());
 
@@ -38,7 +34,7 @@ final class IncompatibleVersionFixer extends AbstractFixer
             $versionConstraint = $this->resolveRequiredVersion($graph, $dependencyName);
 
             if (null === $versionConstraint) {
-                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>.', $dependencyName));
+                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>', $dependencyName));
 
                 continue;
             }

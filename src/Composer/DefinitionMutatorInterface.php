@@ -18,5 +18,7 @@ interface DefinitionMutatorInterface
 
     public function removeReplace(string $name): void;
 
+    public function isMutated(): bool;
+
     public function save(): void;
 }

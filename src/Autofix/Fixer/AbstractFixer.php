@@ -49,21 +49,8 @@ abstract class AbstractFixer implements FixerInterface
     protected function resolveRequiredVersion(DependencyGraph $graph, string $dependencyName): ?string
     {
         $referencedVersions = $this->getReferencedVersions($graph, $dependencyName);
-        $versionConstraint = $this->versionGuesser->guess($referencedVersions);
 
-        if (null === $versionConstraint) {
-            $references = array_map(static function (string $version, string $package): string {
-                return sprintf('%s,: %s', $package, $version);
-            }, $referencedVersions, array_keys($referencedVersions));
-
-            $versionConstraint = $this->output->ask(sprintf(
-                'What version of "%s" would you like to require (referenced as [%s]) ?',
-                $dependencyName,
-                implode(', ', $references)
-            ));
-        }
-
-        return $versionConstraint;
+        return $this->versionGuesser->guess($referencedVersions);
     }
 
     /**

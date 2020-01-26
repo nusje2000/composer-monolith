@@ -22,7 +22,7 @@ final class MissingReplaceFixer extends AbstractFixer
             $mutator->setReplace($violation->getPackage()->getName(), 'self.version');
 
             $this->solution(sprintf(
-                'Added <package>"%s"</package> to replace defintion (replaces version <version>self.version</version>).',
+                'Added <package>"%s"</package> to replace defintion (replaces version <version>self.version</version>)',
                 $violation->getPackage()->getName()
             ));
 

@@ -24,17 +24,13 @@ final class MissingDependencyFixer extends AbstractFixer
             }
         }
 
-        if (empty($missingDependencies)) {
-            return;
-        }
-
         $mutator = $this->definitionMutatorFactory->createByPackage($graph->getRootPackage());
 
         foreach ($missingDependencies as $dependencyName => $violationFixes) {
             $versionConstraint = $this->resolveRequiredVersion($graph, $dependencyName);
 
             if (null === $versionConstraint) {
-                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>.', $dependencyName));
+                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>', $dependencyName));
 
                 continue;
             }
