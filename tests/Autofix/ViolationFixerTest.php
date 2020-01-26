@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Nusje2000\ComposerMonolith\Tests\Autofix;
+
 use Nusje2000\ComposerMonolith\Autofix\FixerCollection;
 use Nusje2000\ComposerMonolith\Autofix\FixerInterface;
 use Nusje2000\ComposerMonolith\Autofix\ViolationFixer;
