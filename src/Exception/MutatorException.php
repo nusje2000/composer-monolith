@@ -6,6 +6,6 @@ namespace Nusje2000\ComposerMonolith\Exception;
 
 use LogicException;
 
-final class ComposerException extends LogicException
+final class MutatorException extends LogicException implements ExceptionInterface
 {
 }

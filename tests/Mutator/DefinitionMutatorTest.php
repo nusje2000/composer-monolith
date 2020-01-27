@@ -4,13 +4,22 @@ declare(strict_types=1);
 
 namespace Nusje2000\ComposerMonolith\Tests\Mutator;
 
-use LogicException;
 use Nusje2000\ComposerMonolith\Composer\DefinitionMutator;
+use Nusje2000\ComposerMonolith\Exception\MutatorException;
 use PHPStan\Testing\TestCase;
 use Symfony\Component\Finder\SplFileInfo;
 
 final class DefinitionMutatorTest extends TestCase
 {
+    public function testConstructWithInvalidJson(): void
+    {
+        $fileInfo = $this->createStub(SplFileInfo::class);
+        $fileInfo->method('getContents')->willReturn('');
+
+        $this->expectException(MutatorException::class);
+        new DefinitionMutator($fileInfo);
+    }
+
     public function testSetDependency(): DefinitionMutator
     {
         $mutator = $this->createMutator();
@@ -91,7 +100,19 @@ final class DefinitionMutatorTest extends TestCase
         $mutator = $this->createMutator();
         $mutator->removeReplace('some/replace');
         unlink(__DIR__ . '/initial_composer.json');
-        $this->expectException(LogicException::class);
+        $this->expectException(MutatorException::class);
+        $mutator->save();
+    }
+
+    public function testNotWriteableDirectoryOnSave(): void
+    {
+        $fileInfo = $this->createStub(SplFileInfo::class);
+        $fileInfo->method('getContents')->willReturn('{}');
+        $mutator = new DefinitionMutator($fileInfo);
+
+        $mutator->setDependency('x', 'y');
+
+        $this->expectException(MutatorException::class);
         $mutator->save();
     }
 

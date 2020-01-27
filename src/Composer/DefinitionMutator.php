@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nusje2000\ComposerMonolith\Composer;
 
-use LogicException;
+use Nusje2000\ComposerMonolith\Exception\MutatorException;
 use Symfony\Component\Finder\SplFileInfo;
 
 final class DefinitionMutator implements DefinitionMutatorInterface
@@ -27,6 +27,10 @@ final class DefinitionMutator implements DefinitionMutatorInterface
     public function __construct(SplFileInfo $fileInfo)
     {
         $decoded = json_decode($fileInfo->getContents(), true);
+
+        if (!is_array($decoded)) {
+            throw new MutatorException(sprintf('Could not decode composer file "%s".', $fileInfo->getRealPath()));
+        }
 
         $this->originalDefinition = $decoded;
         $this->mutatedDefinition = $decoded;
@@ -74,14 +78,21 @@ final class DefinitionMutator implements DefinitionMutatorInterface
             return;
         }
 
+        $path = $this->fileInfo->getRealPath();
+        if (false === $path) {
+            throw new MutatorException('Could not write contents because the path could not be resolved.');
+        }
+
+        if (!$this->fileInfo->isWritable()) {
+            throw new MutatorException(sprintf('"%s" is not writeable.', $path));
+        }
+
         $encoded = json_encode($this->mutatedDefinition, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $encoded .= PHP_EOL;
 
-        $path = $this->fileInfo->getRealPath();
-        if (false === $path) {
-            throw new LogicException('Could not write contents.');
+        $success = file_put_contents($path, $encoded);
+        if (false === $success) {
+            throw new MutatorException(sprintf('Failed writing to "%s".', $path));
         }
-
-        file_put_contents($path, $encoded);
     }
 }
