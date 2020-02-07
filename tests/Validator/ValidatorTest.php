@@ -25,7 +25,7 @@ final class ValidatorTest extends TestCase
         );
 
         $validator = new Validator(new RuleCollection([$rule]));
-        $output = $validator->getErrors(new DependencyGraph('/', new PackageCollection()));
+        $output = $validator->validate(new DependencyGraph('/', new PackageCollection()));
 
         self::assertCount(1, $output);
     }

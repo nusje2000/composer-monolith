@@ -1,0 +1,12 @@
+{
+    "name": "nusje2000/mutator-test",
+    "require": {
+        "some/package": "^1.0"
+    },
+    "require-dev": {
+        "some/dev-package": "^1.0"
+    },
+    "replace": {
+        "some/replace": "self.version"
+    }
+}
