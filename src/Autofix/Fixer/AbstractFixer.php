@@ -6,6 +6,8 @@ namespace Nusje2000\ComposerMonolith\Autofix\Fixer;
 
 use Nusje2000\ComposerMonolith\Autofix\FixerInterface;
 use Nusje2000\ComposerMonolith\Autofix\VersionGuesser;
+use Nusje2000\ComposerMonolith\Composer\DefinitionMutatorFactory;
+use Nusje2000\ComposerMonolith\Composer\DefinitionMutatorFactoryInterface;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Nusje2000\DependencyGraph\Package\PackageInterface;
 use Symfony\Component\Console\Style\OutputStyle;
@@ -22,9 +24,15 @@ abstract class AbstractFixer implements FixerInterface
      */
     protected $versionGuesser;
 
-    public function __construct(OutputStyle $output)
+    /**
+     * @var DefinitionMutatorFactoryInterface
+     */
+    protected $definitionMutatorFactory;
+
+    public function __construct(OutputStyle $output, ?DefinitionMutatorFactoryInterface $definitionMutator = null)
     {
         $this->output = $output;
+        $this->definitionMutatorFactory = $definitionMutator ?? new DefinitionMutatorFactory();
         $this->versionGuesser = new VersionGuesser();
     }
 
@@ -41,21 +49,8 @@ abstract class AbstractFixer implements FixerInterface
     protected function resolveRequiredVersion(DependencyGraph $graph, string $dependencyName): ?string
     {
         $referencedVersions = $this->getReferencedVersions($graph, $dependencyName);
-        $versionConstraint = $this->versionGuesser->guess($referencedVersions);
 
-        if (null === $versionConstraint) {
-            $references = array_map(static function (string $version, string $package): string {
-                return sprintf('%s,: %s', $package, $version);
-            }, $referencedVersions, array_keys($referencedVersions));
-
-            $versionConstraint = $this->output->ask(sprintf(
-                'What version of "%s" would you like to require (referenced as [%s]) ?',
-                $dependencyName,
-                implode(', ', $references)
-            ));
-        }
-
-        return $versionConstraint;
+        return $this->versionGuesser->guess($referencedVersions);
     }
 
     /**

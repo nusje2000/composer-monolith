@@ -7,7 +7,6 @@ namespace Nusje2000\ComposerMonolith\Autofix\Fixer;
 use Nusje2000\ComposerMonolith\Validator\Violation\MissingDependencyViolation;
 use Nusje2000\ComposerMonolith\Validator\ViolationCollection;
 use Nusje2000\ComposerMonolith\Validator\ViolationInterface;
-use Nusje2000\DependencyGraph\Composer\PackageDefinition;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Nusje2000\DependencyGraph\Package\PackageInterface;
 
@@ -25,17 +24,13 @@ final class MissingDependencyFixer extends AbstractFixer
             }
         }
 
-        if (empty($missingDependencies)) {
-            return;
-        }
-
-        $rootDefinition = PackageDefinition::createFromDirectory($graph->getRootPath());
+        $mutator = $this->definitionMutatorFactory->createByPackage($graph->getRootPackage());
 
         foreach ($missingDependencies as $dependencyName => $violationFixes) {
             $versionConstraint = $this->resolveRequiredVersion($graph, $dependencyName);
 
             if (null === $versionConstraint) {
-                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>.', $dependencyName));
+                $this->error(sprintf('Could not resolve version constraint for dependency on <dependency>"%s"</dependency>', $dependencyName));
 
                 continue;
             }
@@ -51,7 +46,7 @@ final class MissingDependencyFixer extends AbstractFixer
                     $versionConstraint
                 ));
 
-                $rootDefinition->setDevDependency($dependencyName, $versionConstraint);
+                $mutator->setDevDependency($dependencyName, $versionConstraint);
             } else {
                 $this->solution(sprintf(
                     'Added pacakge <dependency>"%s"</dependency> to the dependencies (version: <version>%s</version>)',
@@ -59,7 +54,7 @@ final class MissingDependencyFixer extends AbstractFixer
                     $versionConstraint
                 ));
 
-                $rootDefinition->setDependency($dependencyName, $versionConstraint);
+                $mutator->setDependency($dependencyName, $versionConstraint);
             }
 
             foreach ($violationFixes as $violation) {
@@ -67,6 +62,6 @@ final class MissingDependencyFixer extends AbstractFixer
             }
         }
 
-        $rootDefinition->save();
+        $mutator->save();
     }
 }
