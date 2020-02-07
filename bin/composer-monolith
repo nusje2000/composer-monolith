@@ -19,4 +19,6 @@ $application = new Application('Composer Monolith | A monolithic repository depe
 $application->add(new Command\ValidateCommand());
 $application->add(new Command\EqualizeVersionCommand());
 $application->add(new Command\UpdateCommand());
+$application->add(new Command\CodeOwnersGenerateCommand());
+$application->add(new Command\CodeOwnersValidateCommand());
 $application->run();
