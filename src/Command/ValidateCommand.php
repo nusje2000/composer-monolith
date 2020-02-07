@@ -65,7 +65,7 @@ final class ValidateCommand extends Command
             new Fixer\MissingReplaceFixer($io),
         ]));
 
-        $violations = $validator->validate($graph);
+        $violations = $validator->getErrors($graph);
 
         if ($violations->isEmpty()) {
             $io->success(sprintf('Project located at "%s" is valid.', $projectRoot));
