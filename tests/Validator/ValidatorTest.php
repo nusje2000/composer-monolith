@@ -15,7 +15,7 @@ use PHPStan\Testing\TestCase;
 
 final class ValidatorTest extends TestCase
 {
-    public function testValidate(): void
+    public function testGetErrors(): void
     {
         $rule = $this->createMock(RuleInterface::class);
         $rule->expects(self::once())->method('execute')->willReturn(
