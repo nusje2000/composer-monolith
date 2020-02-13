@@ -18,7 +18,7 @@ final class Validator
         $this->rules = $rules;
     }
 
-    public function validate(DependencyGraph $graph): ViolationCollection
+    public function getErrors(DependencyGraph $graph): ViolationCollection
     {
         $violations = new ViolationCollection();
         foreach ($this->rules as $rule) {

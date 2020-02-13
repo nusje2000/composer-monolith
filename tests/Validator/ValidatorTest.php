@@ -15,7 +15,7 @@ use PHPStan\Testing\TestCase;
 
 final class ValidatorTest extends TestCase
 {
-    public function testValidate(): void
+    public function testGetErrors(): void
     {
         $rule = $this->createMock(RuleInterface::class);
         $rule->expects(self::once())->method('execute')->willReturn(
@@ -25,7 +25,7 @@ final class ValidatorTest extends TestCase
         );
 
         $validator = new Validator(new RuleCollection([$rule]));
-        $output = $validator->validate(new DependencyGraph('/', new PackageCollection()));
+        $output = $validator->getErrors(new DependencyGraph('/', new PackageCollection()));
 
         self::assertCount(1, $output);
     }
