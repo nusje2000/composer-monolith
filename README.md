@@ -43,7 +43,7 @@ match the provided version_constraint. This will not actually update the
 package using composer, this must still be done manually.
 
 ### CODEOWNERS file
-In large monolithic repositories, the maintainability can be dificult. Using a CODEOWNERS file can let
+In large monolithic repositories, the maintainability can be difficult. Using a CODEOWNERS file can let
 you VCS make sure that the correct team members must approve things like PR's before it gets merged. There
 is a command that lets you generate and validate a CODEOWNERS file so you don't have to maintain this.
 This command reads the authors from different internal packages and puts them in a central CODEOWNERS

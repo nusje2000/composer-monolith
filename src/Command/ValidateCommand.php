@@ -43,7 +43,7 @@ final class ValidateCommand extends AbstractDependencyGraphCommand
             new Fixer\MissingReplaceFixer($this->io),
         ]));
 
-        $violations = $validator->getErrors($graph);
+        $violations = $validator->getViolations($graph);
 
         if ($violations->isEmpty()) {
             $this->io->success(sprintf('Project located at "%s" is valid.', $graph->getRootPath()));
