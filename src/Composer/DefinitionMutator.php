@@ -92,7 +92,9 @@ final class DefinitionMutator implements DefinitionMutatorInterface
 
         $success = file_put_contents($path, $encoded);
         if (false === $success) {
+            // @codeCoverageIgnoreStart
             throw new MutatorException(sprintf('Failed writing to "%s".', $path));
+            // @codeCoverageIgnoreEnd
         }
     }
 }

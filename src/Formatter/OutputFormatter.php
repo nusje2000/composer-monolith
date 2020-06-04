@@ -18,6 +18,7 @@ final class OutputFormatter extends BaseOutputFormatter
         $this->setStyle('dependency', new OutputFormatterStyle('blue'));
         $this->setStyle('package', new OutputFormatterStyle('blue'));
         $this->setStyle('version', new OutputFormatterStyle('magenta'));
+        $this->setStyle('rule', new OutputFormatterStyle('blue'));
         $this->setStyle('violation', new OutputFormatterStyle('red'));
     }
 }

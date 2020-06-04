@@ -41,3 +41,14 @@ To update a dependency you can use
 This will make sure the version constraints in all sub- and rootpackages
 match the provided version_constraint. This will not actually update the
 package using composer, this must still be done manually.
+
+### CODEOWNERS file
+In large monolithic repositories, the maintainability can be difficult. Using a CODEOWNERS file can let
+you VCS make sure that the correct team members must approve things like PR's before it gets merged. There
+is a command that lets you generate and validate a CODEOWNERS file so you don't have to maintain this.
+This command reads the authors from different internal packages and puts them in a central CODEOWNERS
+file located in the root of you project. To generate a CODEOWNERS file, just run `vendor/bin/composer-monolith codeowners:generate`.
+To make sure that the CODEOWNERS file is always up to date you could use the validate command in your CI system
+to validate the CODEOWNERS file and to make sure no one is missing. To validate the CODEOWNERS file, just run
+`vendor/bin/composer-monolith codeowners:validate`
+ 
