@@ -15,7 +15,7 @@ use PhpParser\NodeVisitorAbstract;
 final class ClassUseVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $fileName;
 
