@@ -41,10 +41,10 @@ final class ClassUseVisitor extends NodeVisitorAbstract
         $this->violations = new ViolationCollection();
     }
 
-    public function enterNode(Node $node): void
+    public function enterNode(Node $node): ?int
     {
         if (!$node instanceof Node\Name) {
-            return;
+            return null;
         }
 
         $referencedClass = (string)$node;
@@ -52,19 +52,19 @@ final class ClassUseVisitor extends NodeVisitorAbstract
         // The reason this will return true is because this is not meant to validate class usages
         // only to validate the correct reference to existing classes/interfaces
         if (!class_exists($referencedClass) && !interface_exists($referencedClass)) {
-            return;
+            return null;
         }
 
         $basePackage = $this->packageFinder->getPackageClosestToFile($this->graph, $this->getCurrentFileName());
         $requiredPackages = $this->packageFinder->getPackagesAssociatedWithClass($this->graph, $referencedClass);
         if ($requiredPackages->isEmpty() || $requiredPackages->contains($basePackage)) {
-            return;
+            return null;
         }
 
         // check if one of the required packages is a dependency of the base package
         foreach ($requiredPackages as $requiredPackage) {
             if ($basePackage->hasDependency($requiredPackage->getName())) {
-                return;
+                return null;
             }
         }
 
@@ -77,6 +77,8 @@ final class ClassUseVisitor extends NodeVisitorAbstract
                 $requiredPackages
             )
         );
+
+        return null;
     }
 
     /**

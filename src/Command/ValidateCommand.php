@@ -107,6 +107,11 @@ final class ValidateCommand extends AbstractDependencyGraphCommand
             return $violations;
         }
 
+        $contents = file_get_contents($this->getBaselinePath($graph));
+        if (false === $contents) {
+            throw new UnexpectedValueException('Could not read baseline.');
+        }
+
         $ignored = Yaml::parse(file_get_contents($this->getBaselinePath($graph)) ?? '')['ignore'] ?? [];
         if (!is_array($ignored)) {
             throw new UnexpectedValueException('Expected ignored files to be array.');

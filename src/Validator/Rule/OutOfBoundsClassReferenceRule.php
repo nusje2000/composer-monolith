@@ -71,6 +71,12 @@ final class OutOfBoundsClassReferenceRule implements RuleInterface
 
             $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
             $stmts = $parser->parse($source);
+            if (null === $stmts) {
+                $this->logger->error(sprintf('Could not parse %s into an AST.', $path));
+
+                continue;
+            }
+
             $this->logger->debug(sprintf('Successfully parsed %s into an AST.', $path));
 
             $visitor->setCurrentFileName($path);
