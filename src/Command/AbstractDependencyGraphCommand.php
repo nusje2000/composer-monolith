@@ -6,9 +6,11 @@ namespace Nusje2000\ComposerMonolith\Command;
 
 use Nusje2000\ComposerMonolith\Formatter\OutputFormatter;
 use Nusje2000\DependencyGraph\DependencyGraph;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -29,6 +31,16 @@ abstract class AbstractDependencyGraphCommand extends Command
      */
     protected $io;
 
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     protected function configure(): void
     {
         $this->addOption('root', 'r', InputOption::VALUE_REQUIRED, 'Set the root path relative to the current working directory.');
@@ -38,6 +50,7 @@ abstract class AbstractDependencyGraphCommand extends Command
     {
         $projectRoot = getcwd();
 
+        $this->logger = new ConsoleLogger($output);
         $this->input = $input;
         $this->output = $output;
 

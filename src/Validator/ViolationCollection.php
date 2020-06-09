@@ -12,6 +12,7 @@ use ArrayIterator;
  * @phpstan-extends ObjectCollection<int|string, ViolationInterface>
  * @psalm-extends   ObjectCollection<int|string, ViolationInterface>
  *
+ * @method ViolationCollection filter(callable $filter)
  * @method ArrayIterator|ViolationInterface[] getIterator()
  * @method ViolationInterface|null first()
  * @method ViolationInterface|null last()
@@ -27,6 +28,7 @@ final class ViolationCollection extends ObjectCollection
 
         return new StringCollection($messages);
     }
+
     public function getFormattedMessages(): StringCollection
     {
         /** @var array<int|string, string> $messages */
