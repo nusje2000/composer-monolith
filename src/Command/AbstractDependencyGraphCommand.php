@@ -6,6 +6,7 @@ namespace Nusje2000\ComposerMonolith\Command;
 
 use Nusje2000\ComposerMonolith\Formatter\OutputFormatter;
 use Nusje2000\DependencyGraph\DependencyGraph;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,6 +29,18 @@ abstract class AbstractDependencyGraphCommand extends Command
      * @var SymfonyStyle
      */
     protected $io;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        parent::__construct();
+        $this->logger = $logger;
+
+    }
 
     protected function configure(): void
     {
