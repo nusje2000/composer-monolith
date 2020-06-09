@@ -20,6 +20,8 @@ use UnexpectedValueException;
 
 final class ValidateCommand extends AbstractDependencyGraphCommand
 {
+    const BASELINE_FILE_NAME = 'composer-monolith-baseline.yaml';
+
     protected static $defaultName = 'validate';
 
     protected function configure(): void
@@ -64,11 +66,9 @@ final class ValidateCommand extends AbstractDependencyGraphCommand
             $this->io->writeln(sprintf('<violation>[VIOLATION]</violation> %s', $violation->getFormattedMessage()));
         }
 
-        if (!empty($filteredViolations)) {
-            $this->io->newLine();
-            $this->io->error(sprintf('Analysis complete, total of %d violations found.', $filteredViolations->count()));
-            $this->io->newLine();
-        }
+        $this->io->newLine();
+        $this->io->error(sprintf('Analysis complete, total of %d violations found.', $filteredViolations->count()));
+        $this->io->newLine();
 
         if ($this->input->getOption('autofix')) {
             $leftViolations = $fixer->fix($graph, $filteredViolations);
@@ -112,7 +112,7 @@ final class ValidateCommand extends AbstractDependencyGraphCommand
             throw new UnexpectedValueException('Could not read baseline.');
         }
 
-        $ignored = Yaml::parse(file_get_contents($this->getBaselinePath($graph)) ?? '')['ignore'] ?? [];
+        $ignored = Yaml::parse($contents)['ignore'] ?? [];
         if (!is_array($ignored)) {
             throw new UnexpectedValueException('Expected ignored files to be array.');
         }
@@ -147,6 +147,6 @@ final class ValidateCommand extends AbstractDependencyGraphCommand
 
     private function getBaselinePath(DependencyGraph $graph): string
     {
-        return $graph->getRootPath() . DIRECTORY_SEPARATOR . 'composer-monolith-baseline.yaml';
+        return $graph->getRootPath() . DIRECTORY_SEPARATOR . self::BASELINE_FILE_NAME;
     }
 }

@@ -3,6 +3,8 @@
 
 use Nusje2000\ComposerMonolith\Command;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'stderr');
@@ -15,10 +17,12 @@ if (is_file($autoloader)) {
     throw new LogicException(sprintf('Could not resolve autoloader file in "%s" (looked for "%s")', getcwd(), $autoloader));
 }
 
+$logger = new ConsoleLogger(new ConsoleOutput());
+
 $application = new Application('Composer Monolith | A monolithic repository dependency validator');
-$application->add(new Command\ValidateCommand());
-$application->add(new Command\EqualizeVersionCommand());
-$application->add(new Command\UpdateCommand());
-$application->add(new Command\CodeOwnersGenerateCommand());
-$application->add(new Command\CodeOwnersValidateCommand());
+$application->add(new Command\ValidateCommand($logger));
+$application->add(new Command\EqualizeVersionCommand($logger));
+$application->add(new Command\UpdateCommand($logger));
+$application->add(new Command\CodeOwnersGenerateCommand($logger));
+$application->add(new Command\CodeOwnersValidateCommand($logger));
 $application->run();

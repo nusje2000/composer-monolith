@@ -10,7 +10,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -36,9 +35,11 @@ abstract class AbstractDependencyGraphCommand extends Command
      */
     protected $logger;
 
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
         parent::__construct();
+        $this->logger = $logger;
+
     }
 
     protected function configure(): void
@@ -50,7 +51,6 @@ abstract class AbstractDependencyGraphCommand extends Command
     {
         $projectRoot = getcwd();
 
-        $this->logger = new ConsoleLogger($output);
         $this->input = $input;
         $this->output = $output;
 
