@@ -1,8 +1,11 @@
 # CHANGELOG
 
-## 2.0.0
+## 1.3.0
  - Added commands for generating and validating codeowner files
  - Replaces in composer files will now be used for validation of missing dependencies
+ - Fixed deprecations from dependency-graph
+ - Added `CodeOwnersGenerateCommand`
+ - Added `CodeOwnersValidateCommand`
 
 ## 1.2.0
  - Added MissingReplaceRule and MissingReplaceFixer

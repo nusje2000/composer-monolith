@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nusje2000\ComposerMonolith\Command;
 
-use Nusje2000\DependencyGraph\Composer\PackageDefinition;
+use Nusje2000\ComposerMonolith\Composer\DefinitionMutatorFactory;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Nusje2000\DependencyGraph\Package\PackageInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,6 +12,17 @@ use Symfony\Component\Console\Input\InputOption;
 final class EqualizeVersionCommand extends AbstractDependencyGraphCommand
 {
     protected static $defaultName = 'version-equalize';
+
+    /**
+     * @var DefinitionMutatorFactory
+     */
+    private $mutatorFactory;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->mutatorFactory = new DefinitionMutatorFactory();
+    }
 
     protected function configure(): void
     {
@@ -30,7 +41,6 @@ final class EqualizeVersionCommand extends AbstractDependencyGraphCommand
             return !$package->isFromVendor();
         });
 
-        /** @var array<string, array<string, string>> $dependencies */
         $dependencies = [];
         foreach ($packages as $package) {
             foreach ($package->getDependencies() as $dependency) {
@@ -97,11 +107,10 @@ final class EqualizeVersionCommand extends AbstractDependencyGraphCommand
             }
 
             $dependency = $package->getDependency($selectedDependency);
+            $mutator = $this->mutatorFactory->createByPackage($package);
 
-            $definition = PackageDefinition::createFromDirectory($package->getPackageLocation());
-
-            if ($definition->hasDependency($selectedDependency)) {
-                $definition->setDependency($selectedDependency, $selectedVersion);
+            if (!$dependency->isDev()) {
+                $mutator->setDependency($selectedDependency, $selectedVersion);
 
                 $this->io->writeln(sprintf(
                     '<success>[SUCCESS]</success> changed dependency on <dependency>"%s"</dependency> from ' .
@@ -111,10 +120,8 @@ final class EqualizeVersionCommand extends AbstractDependencyGraphCommand
                     $selectedVersion,
                     $package->getName()
                 ));
-            }
-
-            if ($definition->hasDevDependency($selectedDependency)) {
-                $definition->setDevDependency($selectedDependency, $selectedVersion);
+            } else {
+                $mutator->setDevDependency($selectedDependency, $selectedVersion);
 
                 $this->io->writeln(sprintf(
                     '<success>[SUCCESS]</success> changed dev-dependency on <dependency>"%s"</dependency> from ' .
@@ -126,7 +133,7 @@ final class EqualizeVersionCommand extends AbstractDependencyGraphCommand
                 ));
             }
 
-            $definition->save();
+            $mutator->save();
         }
 
         return 0;

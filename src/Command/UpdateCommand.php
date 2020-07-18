@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nusje2000\ComposerMonolith\Command;
 
-use Nusje2000\DependencyGraph\Composer\PackageDefinition;
+use Nusje2000\ComposerMonolith\Composer\DefinitionMutatorFactory;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Nusje2000\DependencyGraph\Package\PackageInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,6 +13,17 @@ use Symfony\Component\Console\Input\InputOption;
 final class UpdateCommand extends AbstractDependencyGraphCommand
 {
     protected static $defaultName = 'update';
+
+    /**
+     * @var DefinitionMutatorFactory
+     */
+    private $mutatorFactory;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->mutatorFactory = new DefinitionMutatorFactory();
+    }
 
     protected function configure(): void
     {
@@ -48,41 +59,44 @@ final class UpdateCommand extends AbstractDependencyGraphCommand
             return !$package->isFromVendor();
         });
 
+        $updates = 0;
         foreach ($packages as $package) {
-            $definition = PackageDefinition::createFromDirectory($package->getPackageLocation());
+            $mutator = $this->mutatorFactory->createByPackage($package);
 
-            if ($definition->hasDependency($dependencyName)) {
-                $currentVersion = $definition->getDependencyVersionConstraint($dependencyName);
-                $definition->setDependency($dependencyName, $versionConstraint);
+            if (!$package->hasDependency($dependencyName)) {
+                continue;
+            }
+
+            $dependency = $package->getDependency($dependencyName);
+            if (!$dependency->isDev()) {
+                $mutator->setDependency($dependencyName, $versionConstraint);
 
                 $this->io->writeln(sprintf(
                     '<success>[SUCCESS]</success> changed dependency on <dependency>"%s"</dependency> from ' .
                     'version <version>%s</version> to <version>%s</version> in package <package>"%s"</package>',
                     $dependencyName,
-                    $currentVersion,
+                    $dependency->getVersionConstraint(),
                     $versionConstraint,
                     $package->getName()
                 ));
-            }
-
-            if ($definition->hasDevDependency($dependencyName)) {
-                $currentVersion = $definition->getDevDependencyVersionConstraint($dependencyName);
-                $definition->setDevDependency($dependencyName, $versionConstraint);
+            } else {
+                $mutator->setDevDependency($dependencyName, $versionConstraint);
 
                 $this->io->writeln(sprintf(
                     '<success>[SUCCESS]</success> changed dev-dependency on <dependency>"%s"</dependency> from ' .
                     'version <version>%s</version> to <version>%s</version> in package <package>"%s"</package>',
                     $dependencyName,
-                    $currentVersion,
+                    $dependency->getVersionConstraint(),
                     $versionConstraint,
                     $package->getName()
                 ));
             }
 
-            if ($definition->hasDependency($dependencyName) || $definition->hasDevDependency($dependencyName)) {
-                $definition->save();
-            }
+            $updates++;
+            $mutator->save();
         }
+
+        $this->output->writeln(sprintf('<success>[SUCCESS]</success> Updated %d packages.', $updates));
 
         return 0;
     }
