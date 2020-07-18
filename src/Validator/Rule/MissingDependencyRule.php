@@ -10,9 +10,21 @@ use Nusje2000\ComposerMonolith\Validator\ViolationCollection;
 use Nusje2000\DependencyGraph\Dependency\DependencyInterface;
 use Nusje2000\DependencyGraph\Dependency\DependencyTypeEnum;
 use Nusje2000\DependencyGraph\DependencyGraph;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class MissingDependencyRule implements RuleInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    public function __construct(?LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?? new NullLogger();
+    }
+
     public function execute(DependencyGraph $graph): ViolationCollection
     {
         $rootPackage = $graph->getRootPackage();
@@ -20,9 +32,13 @@ final class MissingDependencyRule implements RuleInterface
         $violations = new ViolationCollection();
 
         foreach ($subPackages as $subPackage) {
+            $this->logger->info(sprintf('Validating dependencies of "%s".', $subPackage->getName()));
+
             foreach ($subPackage->getDependencies() as $dependency) {
                 // skip references to internal packages
                 if ($subPackages->hasPackageByName($dependency->getName())) {
+                    $this->logger->debug(sprintf('Skipped validation of "%s", package is internal.', $dependency->getName()));
+
                     continue;
                 }
 
@@ -30,6 +46,10 @@ final class MissingDependencyRule implements RuleInterface
                     !$rootPackage->hasDependency($dependency->getName())
                     && !$this->isReplacedDependency($graph, $dependency)
                 ) {
+                    $this->logger->info(
+                        sprintf('Package "%s" requires "%s" but dependency is not present in root definition.', $subPackage->getName(), $dependency->getName())
+                    );
+
                     $violations->append(new MissingDependencyViolation($subPackage, $dependency));
                 }
             }
