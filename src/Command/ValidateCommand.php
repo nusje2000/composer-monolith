@@ -7,11 +7,13 @@ namespace Nusje2000\ComposerMonolith\Command;
 use Nusje2000\ComposerMonolith\Autofix\Fixer;
 use Nusje2000\ComposerMonolith\Autofix\FixerCollection;
 use Nusje2000\ComposerMonolith\Autofix\ViolationFixer;
+use Nusje2000\ComposerMonolith\Composer\DefinitionMutatorFactory;
 use Nusje2000\ComposerMonolith\Validator\Rule;
 use Nusje2000\ComposerMonolith\Validator\RuleCollection;
 use Nusje2000\ComposerMonolith\Validator\Validator;
 use Nusje2000\DependencyGraph\DependencyGraph;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 
 final class ValidateCommand extends AbstractDependencyGraphCommand
 {
@@ -31,18 +33,15 @@ final class ValidateCommand extends AbstractDependencyGraphCommand
 
     protected function doExecute(DependencyGraph $graph): int
     {
+        $logger = new ConsoleLogger($this->output);
+
         $validator = new Validator(new RuleCollection([
-            new Rule\MissingDependencyRule(),
-            new Rule\IncompatibleVersionRule(),
-            new Rule\MissingReplaceRule(),
-        ]));
+            new Rule\MissingDependencyRule($logger),
+            new Rule\IncompatibleVersionRule($logger),
+            new Rule\MissingReplaceRule($logger),
+        ]), $logger);
 
-        $fixer = new ViolationFixer(new FixerCollection([
-            new Fixer\MissingDependencyFixer($this->io),
-            new Fixer\IncompatibleVersionFixer($this->io),
-            new Fixer\MissingReplaceFixer($this->io),
-        ]));
-
+        $logger->notice(sprintf('Validating project located at "%s".', $graph->getRootPath()));
         $violations = $validator->getViolations($graph);
 
         if ($violations->isEmpty()) {
@@ -62,6 +61,16 @@ final class ValidateCommand extends AbstractDependencyGraphCommand
         }
 
         if ($this->input->getOption('autofix')) {
+            $logger->notice(sprintf('Attempting to fix "%d" violations automatically.', $violations->count()));
+
+            $mutatorFactory = new DefinitionMutatorFactory($logger);
+
+            $fixer = new ViolationFixer(new FixerCollection([
+                new Fixer\MissingDependencyFixer($this->io, $mutatorFactory),
+                new Fixer\IncompatibleVersionFixer($this->io, $mutatorFactory),
+                new Fixer\MissingReplaceFixer($this->io, $mutatorFactory),
+            ]));
+
             $leftViolations = $fixer->fix($graph, $violations);
 
             $this->io->section('Autofix report');
