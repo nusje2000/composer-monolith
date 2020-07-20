@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## 1.3.0
+ - Improved logging
  - Added commands for generating and validating codeowner files
  - Replaces in composer files will now be used for validation of missing dependencies
  - Fixed deprecations from dependency-graph

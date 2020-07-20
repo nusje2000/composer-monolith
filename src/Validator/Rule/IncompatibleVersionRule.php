@@ -10,17 +10,25 @@ use Nusje2000\ComposerMonolith\Validator\Violation\IncompatibleVersionConstraint
 use Nusje2000\ComposerMonolith\Validator\ViolationCollection;
 use Nusje2000\DependencyGraph\Dependency\DependencyInterface;
 use Nusje2000\DependencyGraph\DependencyGraph;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class IncompatibleVersionRule implements RuleInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     /**
      * @var VersionParser
      */
     private $versionParser;
 
-    public function __construct()
+    public function __construct(?LoggerInterface $logger = null)
     {
         $this->versionParser = new VersionParser();
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function execute(DependencyGraph $graph): ViolationCollection
@@ -29,13 +37,25 @@ final class IncompatibleVersionRule implements RuleInterface
         $violations = new ViolationCollection();
 
         foreach ($subPackages as $subPackage) {
+            $this->logger->info(sprintf('Validating dependencies of "%s".', $subPackage->getName()));
+
             foreach ($subPackage->getDependencies() as $dependency) {
                 $rootVersionConstraint = $this->getRootVersionConstraint($graph, $dependency);
                 if (null === $rootVersionConstraint) {
+                    $this->logger->debug(sprintf('Skipped validation of "%s", dependency is not present in root definition.', $dependency->getName()));
+
                     continue;
                 }
 
                 if (!$this->isCompatible($rootVersionConstraint, $dependency->getVersionConstraint())) {
+                    $this->logger->info(sprintf(
+                        'Incompatible version for dependency "%s" found in package "%s" (root: %s, package: %s).',
+                        $dependency->getName(),
+                        $subPackage->getName(),
+                        $rootVersionConstraint,
+                        $dependency->getVersionConstraint()
+                    ));
+
                     $violations->append(
                         new IncompatibleVersionConstraintViolation($subPackage, $dependency, $rootVersionConstraint)
                     );
@@ -77,9 +97,9 @@ final class IncompatibleVersionRule implements RuleInterface
 
     private function isCompatible(string $rootVersionConstraint, string $subPackageVersionConstraint): bool
     {
-        $rootPacakgeConstraint = $this->versionParser->parseConstraints($rootVersionConstraint);
+        $rootPackageConstraint = $this->versionParser->parseConstraints($rootVersionConstraint);
         $subPackageConstraint = $this->versionParser->parseConstraints($subPackageVersionConstraint);
 
-        return $rootPacakgeConstraint->matches($subPackageConstraint);
+        return $rootPackageConstraint->matches($subPackageConstraint);
     }
 }
